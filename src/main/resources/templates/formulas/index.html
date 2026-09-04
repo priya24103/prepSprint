@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::#content}, 'formulas')}">
+<head>
+    <title>Formula Vault - PrepSprint</title>
+</head>
+<body>
+
+<div id="content">
+    <style>
+        .formula-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+
+        .category-chips-scroll {
+            display: flex;
+            gap: var(--space-xs);
+            overflow-x: auto;
+            padding-bottom: 6px;
+            margin-bottom: var(--space-lg);
+        }
+
+        .formulas-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-lg);
+        }
+
+        @media (min-width: 1024px) {
+            .formulas-layout {
+                grid-template-columns: 280px 1fr;
+            }
+        }
+
+        .category-sidebar {
+            display: none;
+            background: var(--color-white);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-pale-dogwood);
+            padding: var(--space-md);
+            height: fit-content;
+        }
+
+        @media (min-width: 1024px) {
+            .category-sidebar {
+                display: block;
+            }
+            .category-chips-scroll {
+                display: none;
+            }
+        }
+
+        .category-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            color: var(--color-text-dark);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            transition: background 0.2s ease;
+        }
+
+        .category-link:hover {
+            background-color: var(--color-alabaster);
+        }
+
+        .category-link.active {
+            background-color: var(--color-light-blue);
+            color: var(--color-text-dark);
+        }
+
+        .formulas-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-md);
+        }
+
+        @media (min-width: 768px) {
+            .formulas-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .formula-card {
+            border-left: 4px solid var(--color-verdigris);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .formula-expression-box {
+            background-color: #F8FAFC;
+            border: 1.5px solid #E2E8F0;
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            font-family: "Georgia", "Cambria", serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--color-text-dark);
+            text-align: center;
+            margin: var(--space-sm) 0;
+            letter-spacing: 0.5px;
+        }
+
+        .variables-list {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            margin-bottom: var(--space-sm);
+        }
+
+        .shortcut-box {
+            background-color: #FFF9C4;
+            border: 1px solid #FFF176;
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            color: #574B00;
+            margin-top: 8px;
+        }
+
+        .example-box {
+            background-color: var(--color-alabaster);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            color: var(--color-text-dark);
+            margin-top: 8px;
+        }
+
+        .recent-section {
+            background: var(--color-white);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-pale-dogwood);
+            padding: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+    </style>
+
+    <!-- Page Header -->
+    <div class="formula-page-header">
+        <div>
+            <h1>📐 Formula Vault</h1>
+            <p>Fast-access Quant formulas, shortcuts, variable keys, and worked examples.</p>
+        </div>
+        <a th:href="@{/formulas/quick(topicId=${selectedTopicId})}" class="btn btn-primary">
+            ⚡ Quick Formula Mode
+        </a>
+    </div>
+
+    <!-- Recently Viewed Section -->
+    <div th:unless="${#lists.isEmpty(recentFormulas)}" class="recent-section">
+        <div style="font-size: 0.85rem; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase; margin-bottom: 8px;">
+            🕒 Recently Viewed Formulas
+        </div>
+        <div style="display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px;">
+            <div th:each="rf : ${recentFormulas}" style="background: var(--color-alabaster); border: 1px solid var(--color-pale-dogwood); border-radius: 8px; padding: 8px 14px; white-space: nowrap; font-size: 0.85rem; font-weight: 600;">
+                <span th:text="${rf.title}">Formula Title</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Category Chips -->
+    <div class="category-chips-scroll">
+        <a th:href="@{/formulas(search=${search})}" class="chip" th:classappend="${selectedTopicId == null ? 'active' : ''}">All Categories</a>
+        <a th:each="topic : ${topics}" th:href="@{/formulas(topicId=${topic.id}, search=${search})}" class="chip" th:classappend="${selectedTopicId == topic.id ? 'active' : ''}" th:text="${topic.name}">Topic</a>
+    </div>
+
+    <!-- Main Layout (Sidebar + Grid) -->
+    <div class="formulas-layout">
+        <!-- Desktop Category Sidebar -->
+        <div class="category-sidebar">
+            <h3 style="margin-bottom: var(--space-sm);">Categories</h3>
+            <a th:href="@{/formulas(search=${search})}" class="category-link" th:classappend="${selectedTopicId == null ? 'active' : ''}">
+                <span>All Formulas</span>
+            </a>
+            <a th:each="topic : ${topics}" th:href="@{/formulas(topicId=${topic.id}, search=${search})}" class="category-link" th:classappend="${selectedTopicId == topic.id ? 'active' : ''}">
+                <span th:text="${topic.name}">Topic Name</span>
+            </a>
+        </div>
+
+        <!-- Formulas List Grid -->
+        <div>
+            <!-- Search Control -->
+            <form th:action="@{/formulas}" method="get" style="margin-bottom: var(--space-md);">
+                <input type="hidden" name="topicId" th:value="${selectedTopicId}" />
+                <input type="text" name="search" class="form-control" placeholder="🔍 Search formula title, expression, or shortcut..." th:value="${search}" />
+            </form>
+
+            <div th:if="${#lists.isEmpty(formulas)}" class="card" style="text-align: center; padding: 32px;">
+                <p>No formulas found for the selected category or query.</p>
+            </div>
+
+            <div th:unless="${#lists.isEmpty(formulas)}" class="formulas-grid">
+                <div th:each="formula : ${formulas}" class="card formula-card">
+                    <div>
+                        <div class="card-header">
+                            <h3 class="card-title" th:text="${formula.title}">Formula Title</h3>
+                            <span class="badge badge-info" th:text="${formula.topicName}">Topic</span>
+                        </div>
+
+                        <!-- Mathematical Formula Expression Box -->
+                        <div class="formula-expression-box" th:text="${formula.formula}">
+                            Formula Expression
+                        </div>
+
+                        <!-- Variable Definitions -->
+                        <div class="variables-list" th:if="${formula.variables != null and !formula.variables.isEmpty()}">
+                            <strong>Where:</strong> <span th:text="${formula.variables}">Variables</span>
+                        </div>
+
+                        <!-- Shortcut / Tip Box -->
+                        <div class="shortcut-box" th:if="${formula.shortcut != null and !formula.shortcut.isEmpty()}">
+                            💡 <strong>Shortcut:</strong> <span th:text="${formula.shortcut}">Tip</span>
+                        </div>
+
+                        <!-- Example Box -->
+                        <div class="example-box" th:if="${formula.example != null and !formula.example.isEmpty()}">
+                            📝 <strong>Example:</strong> <span th:text="${formula.example}">Worked example</span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+                        <button type="button" class="btn btn-sm btn-outline bookmark-formula-btn"
+                                th:data-id="${formula.id}"
+                                th:data-bookmarked="${formula.bookmarked}">
+                            <span th:text="${formula.bookmarked ? '🔖 Bookmarked' : '📑 Bookmark'}">📑 Bookmark</span>
+                        </button>
+                        <a th:href="@{/formulas/quick(topicId=${formula.topicId})}" class="btn btn-sm btn-secondary">
+                            Quick Mode ⚡
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const csrfToken = /*[[${_csrf.token}]]*/ '';
+        const csrfHeader = /*[[${_csrf.headerName}]]*/ 'X-CSRF-TOKEN';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.bookmark-formula-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const formulaId = this.getAttribute('data-id');
+                    let isBookmarked = this.getAttribute('data-bookmarked') === 'true';
+
+                    const method = isBookmarked ? 'DELETE' : 'POST';
+                    const url = isBookmarked ? '/api/bookmarks/FORMULA/' + formulaId : '/api/bookmarks';
+                    const options = {
+                        method: method,
+                        headers: {
+                            [csrfHeader]: csrfToken
+                        }
+                    };
+                    if (!isBookmarked) {
+                        options.headers['Content-Type'] = 'application/json';
+                        options.body = JSON.stringify({ contentType: 'FORMULA', contentId: parseInt(formulaId) });
+                    }
+
+                    fetch(url, options)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                this.setAttribute('data-bookmarked', data.bookmarked);
+                                const labelSpan = this.querySelector('span');
+                                if (labelSpan) {
+                                    labelSpan.textContent = data.bookmarked ? '🔖 Bookmarked' : '📑 Bookmark';
+                                }
+                            }
+                        })
+                        .catch(err => console.error('Error toggling formula bookmark:', err));
+                });
+            });
+        });
+        /*]]>*/
+    </script>
+</div>
+
+</body>
+</html>

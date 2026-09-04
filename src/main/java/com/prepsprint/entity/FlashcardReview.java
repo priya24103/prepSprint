@@ -2,7 +2,6 @@ package com.prepsprint.entity;
 
 import com.prepsprint.enums.FlashcardRating;
 import jakarta.persistence.*;
-import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -12,11 +11,6 @@ import java.time.LocalDateTime;
         @Index(name = "idx_fc_reviews_user_id", columnList = "user_id"),
         @Index(name = "idx_fc_reviews_flashcard_id", columnList = "flashcard_id")
 })
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class FlashcardReview {
 
     @Id
@@ -41,4 +35,64 @@ public class FlashcardReview {
     @CreationTimestamp
     @Column(name = "reviewed_at", updatable = false)
     private LocalDateTime reviewedAt;
+
+    public FlashcardReview() {
+    }
+
+    public FlashcardReview(Long id, User user, Flashcard flashcard, FlashcardRating rating, int boxLevel, LocalDateTime reviewedAt) {
+        this.id = id;
+        this.user = user;
+        this.flashcard = flashcard;
+        this.rating = rating;
+        this.boxLevel = boxLevel;
+        this.reviewedAt = reviewedAt;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Flashcard getFlashcard() {
+        return flashcard;
+    }
+
+    public void setFlashcard(Flashcard flashcard) {
+        this.flashcard = flashcard;
+    }
+
+    public FlashcardRating getRating() {
+        return rating;
+    }
+
+    public void setRating(FlashcardRating rating) {
+        this.rating = rating;
+    }
+
+    public int getBoxLevel() {
+        return boxLevel;
+    }
+
+    public void setBoxLevel(int boxLevel) {
+        this.boxLevel = boxLevel;
+    }
+
+    public LocalDateTime getReviewedAt() {
+        return reviewedAt;
+    }
+
+    public void setReviewedAt(LocalDateTime reviewedAt) {
+        this.reviewedAt = reviewedAt;
+    }
 }

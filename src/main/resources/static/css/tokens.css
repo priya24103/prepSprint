@@ -1,0 +1,39 @@
+:root {
+    /* Brand Color Palette (PRD Section 4) */
+    --color-verdigris: #75B9BF;
+    --color-light-blue: #B7DDDA;
+    --color-alabaster: #F2ECE1;
+    --color-misty-rose: #FCDDD3;
+    --color-pale-dogwood: #E6C4B7;
+    --color-white: #FFFFFF;
+    --color-text-dark: #243238;
+    --color-text-muted: #68777B;
+    --color-success: #5A9E72;
+    --color-warning: #D69A4A;
+    --color-error: #C96B6B;
+
+    /* Spacing Scale */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-2xl: 48px;
+
+    /* Border Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-full: 9999px;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 4px rgba(36, 50, 56, 0.04);
+    --shadow-md: 0 6px 16px rgba(36, 50, 56, 0.08);
+    --shadow-lg: 0 12px 28px rgba(36, 50, 56, 0.12);
+
+    /* Layout Dimensions */
+    --sidebar-width: 250px;
+    --header-height: 60px;
+    --bottom-nav-height: 64px;
+    --tap-target-min: 44px;
+}

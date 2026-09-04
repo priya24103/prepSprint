@@ -2,7 +2,6 @@ package com.prepsprint.entity;
 
 import com.prepsprint.enums.QuizMode;
 import jakarta.persistence.*;
-import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -12,11 +11,6 @@ import java.time.LocalDateTime;
         @Index(name = "idx_quiz_attempts_user_id", columnList = "user_id"),
         @Index(name = "idx_quiz_attempts_subject_id", columnList = "subject_id")
 })
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class QuizAttempt {
 
     @Id
@@ -47,4 +41,82 @@ public class QuizAttempt {
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
+    public QuizAttempt() {
+    }
+
+    public QuizAttempt(Long id, User user, Subject subject, QuizMode mode, int score, int total, int durationSeconds, LocalDateTime createdAt) {
+        this.id = id;
+        this.user = user;
+        this.subject = subject;
+        this.mode = mode;
+        this.score = score;
+        this.total = total;
+        this.durationSeconds = durationSeconds;
+        this.createdAt = createdAt;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Subject getSubject() {
+        return subject;
+    }
+
+    public void setSubject(Subject subject) {
+        this.subject = subject;
+    }
+
+    public QuizMode getMode() {
+        return mode;
+    }
+
+    public void setMode(QuizMode mode) {
+        this.mode = mode;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    public int getDurationSeconds() {
+        return durationSeconds;
+    }
+
+    public void setDurationSeconds(int durationSeconds) {
+        this.durationSeconds = durationSeconds;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }

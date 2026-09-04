@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::#content}, 'bookmarks')}">
+<head>
+    <title>My Bookmarks - PrepSprint</title>
+</head>
+<body>
+
+<div id="content">
+    <style>
+        .bookmarks-header {
+            margin-bottom: var(--space-lg);
+        }
+
+        .bookmarks-filter-chips {
+            display: flex;
+            gap: var(--space-xs);
+            overflow-x: auto;
+            padding-bottom: 6px;
+            margin-bottom: var(--space-lg);
+        }
+
+        .bookmarks-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-md);
+        }
+
+        @media (min-width: 768px) {
+            .bookmarks-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .bookmarks-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .bookmark-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: var(--color-white);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-pale-dogwood);
+            padding: var(--space-md);
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .bookmark-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .bookmark-card-top {
+            margin-bottom: var(--space-sm);
+        }
+
+        .bookmark-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-xs);
+        }
+
+        .bookmark-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--color-text-dark);
+            line-height: 1.4;
+            margin-bottom: var(--space-xs);
+        }
+
+        .bookmark-category {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+        }
+
+        .bookmark-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--space-md);
+            padding-top: var(--space-xs);
+            border-top: 1px solid var(--color-alabaster);
+        }
+
+        .remove-bookmark-btn {
+            background: none;
+            border: none;
+            color: var(--color-error);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            transition: background 0.2s ease;
+        }
+
+        .remove-bookmark-btn:hover {
+            background-color: var(--color-misty-rose);
+        }
+    </style>
+
+    <div class="bookmarks-header">
+        <h1>🔖 My Bookmarks</h1>
+        <p>Your saved flashcards, formulas, questions, and interview topics for quick reference.</p>
+    </div>
+
+    <!-- Filter Chips -->
+    <div class="bookmarks-filter-chips">
+        <a th:href="@{/bookmarks}" class="chip" th:classappend="${selectedType == null ? 'active' : ''}">All Bookmarks</a>
+        <a th:href="@{/bookmarks(type='FLASHCARD')}" class="chip" th:classappend="${selectedType?.name() == 'FLASHCARD' ? 'active' : ''}">🎴 Flashcards</a>
+        <a th:href="@{/bookmarks(type='FORMULA')}" class="chip" th:classappend="${selectedType?.name() == 'FORMULA' ? 'active' : ''}">📐 Formulas</a>
+        <a th:href="@{/bookmarks(type='MCQ')}" class="chip" th:classappend="${selectedType?.name() == 'MCQ' ? 'active' : ''}">❓ MCQs</a>
+        <a th:href="@{/bookmarks(type='TECHNICAL_QUESTION')}" class="chip" th:classappend="${selectedType?.name() == 'TECHNICAL_QUESTION' ? 'active' : ''}">💻 Tech Q&A</a>
+        <a th:href="@{/bookmarks(type='HR_QUESTION')}" class="chip" th:classappend="${selectedType?.name() == 'HR_QUESTION' ? 'active' : ''}">🗣️ HR Q&A</a>
+    </div>
+
+    <!-- Empty State -->
+    <div th:if="${#lists.isEmpty(bookmarks)}" class="card" style="text-align: center; padding: 48px 24px;">
+        <div style="font-size: 3rem; margin-bottom: 12px;">🔖</div>
+        <h3 style="margin-bottom: 8px;">No Bookmarks Found</h3>
+        <p style="color: var(--color-text-muted); max-width: 400px; margin: 0 auto 20px;">
+            You haven't bookmarked any items in this category yet. Save flashcards or formulas while revising to view them here!
+        </p>
+        <a th:href="@{/subjects}" class="btn btn-primary">Browse Subjects</a>
+    </div>
+
+    <!-- Bookmarks Grid -->
+    <div th:unless="${#lists.isEmpty(bookmarks)}" class="bookmarks-grid" id="bookmarksContainer">
+        <div th:each="bm : ${bookmarks}" class="bookmark-card" th:id="'bookmark-card-' + ${bm.contentType.name()} + '-' + ${bm.contentId}">
+            <div class="bookmark-card-top">
+                <div class="bookmark-meta">
+                    <span class="badge badge-info" th:text="${bm.contentType}">FLASHCARD</span>
+                    <span class="bookmark-category" th:text="${bm.categoryName}">Topic</span>
+                </div>
+                <div class="bookmark-title" th:text="${bm.title}">
+                    Bookmark Title / Question Text
+                </div>
+            </div>
+
+            <div class="bookmark-actions">
+                <button type="button" class="remove-bookmark-btn"
+                        th:data-type="${bm.contentType.name()}"
+                        th:data-id="${bm.contentId}"
+                        onclick="removeBookmark(this)">
+                    🗑️ Remove
+                </button>
+
+                <a th:href="@{${bm.targetUrl}}" class="btn btn-sm btn-outline">
+                    Open →
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const csrfToken = /*[[${_csrf.token}]]*/ '';
+        const csrfHeader = /*[[${_csrf.headerName}]]*/ 'X-CSRF-TOKEN';
+
+        function removeBookmark(btn) {
+            const contentType = btn.getAttribute('data-type');
+            const contentId = btn.getAttribute('data-id');
+            const cardId = 'bookmark-card-' + contentType + '-' + contentId;
+
+            fetch('/api/bookmarks/' + contentType + '/' + contentId, {
+                method: 'DELETE',
+                headers: {
+                    [csrfHeader]: csrfToken
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const card = document.getElementById(cardId);
+                    if (card) {
+                        card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.9)';
+                        setTimeout(() => {
+                            card.remove();
+                            const container = document.getElementById('bookmarksContainer');
+                            if (container && container.children.length === 0) {
+                                window.location.reload();
+                            }
+                        }, 300);
+                    }
+                }
+            })
+            .catch(err => console.error('Error removing bookmark:', err));
+        }
+        /*]]>*/
+    </script>
+</div>
+
+</body>
+</html>

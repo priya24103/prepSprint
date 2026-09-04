@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::#content}, 'flashcards')}">
+<head>
+    <title th:text="${flashcard.topicName} + ' Flashcard - PrepSprint'">Flashcard Study - PrepSprint</title>
+</head>
+<body>
+
+<div id="content">
+    <style>
+        .flashcard-container {
+            max-width: 580px;
+            margin: 0 auto;
+        }
+
+        .flashcard-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-md);
+        }
+
+        /* Phone Screen Fit Constraint (PRD Section 5) */
+        .flashcard-workspace {
+            background: var(--color-white);
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--color-pale-dogwood);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-md);
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: var(--space-md);
+        }
+
+        .card-top-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-sm);
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-text-dark);
+            margin-bottom: var(--space-md);
+            line-height: 1.4;
+        }
+
+        .answer-box {
+            background-color: var(--color-alabaster);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            border: 1px solid var(--color-pale-dogwood);
+            margin-top: var(--space-md);
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .answer-box.visible {
+            display: block;
+        }
+
+        .answer-text {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--color-text-dark);
+            margin-bottom: var(--space-sm);
+        }
+
+        .explanation-text {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            margin-bottom: var(--space-sm);
+        }
+
+        .code-example {
+            background-color: #1E293B;
+            color: #F8FAFC;
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            margin-top: var(--space-sm);
+            white-space: pre-wrap;
+        }
+
+        .rating-controls {
+            display: none;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-sm);
+            margin-top: var(--space-md);
+        }
+
+        .rating-controls.visible {
+            display: grid;
+        }
+
+        .btn-forgot {
+            background-color: #FFEBEE;
+            color: var(--color-error);
+            border: 1.5px solid var(--color-error);
+        }
+        .btn-forgot:hover { background-color: var(--color-error); color: #fff; }
+
+        .btn-almost {
+            background-color: #FFF3E0;
+            color: var(--color-warning);
+            border: 1.5px solid var(--color-warning);
+        }
+        .btn-almost:hover { background-color: var(--color-warning); color: #fff; }
+
+        .btn-easy {
+            background-color: #E8F5E9;
+            color: var(--color-success);
+            border: 1.5px solid var(--color-success);
+        }
+        .btn-easy:hover { background-color: var(--color-success); color: #fff; }
+
+        .nav-buttons-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--space-sm);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bookmark-btn {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 4px;
+        }
+    </style>
+
+    <div class="flashcard-container">
+        <!-- Breadcrumb & Top Bar -->
+        <div class="flashcard-header-bar">
+            <div>
+                <a th:href="@{/subjects/{id}(id=${flashcard.subjectId})}" style="font-size: 0.85rem; color: var(--color-text-muted);">
+                    ← Back to <span th:text="${flashcard.subjectName}">Subject</span>
+                </a>
+                <h3 th:text="${flashcard.topicName}" style="margin-top: 2px;">Topic Name</h3>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <button type="button" class="bookmark-btn" id="bookmarkBtn" th:title="${flashcard.bookmarked ? 'Remove Bookmark' : 'Add Bookmark'}">
+                    <span th:text="${flashcard.bookmarked ? '🔖' : '📑'}">📑</span>
+                </button>
+                <span class="badge badge-info" id="boxLevelBadge" th:text="'Box ' + ${flashcard.currentBoxLevel} + '/5'">Box 1/5</span>
+            </div>
+        </div>
+
+        <!-- Progress Counter -->
+        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 8px;">
+            <span>Card <strong th:text="${flashcard.currentIndex}">1</strong> of <strong th:text="${flashcard.totalInTopic}">10</strong></span>
+            <span th:text="${flashcard.difficulty}">EASY</span>
+        </div>
+
+        <!-- Main Flashcard Workspace -->
+        <div class="flashcard-workspace">
+            <div>
+                <!-- Question Section -->
+                <div class="card-top-meta">
+                    <span class="badge badge-warning" th:text="'Priority P' + ${flashcard.priority}">P1</span>
+                </div>
+
+                <div class="question-text" th:text="${flashcard.question}">
+                    Placeholder question text for Flashcard
+                </div>
+
+                <!-- Answer Reveal Box (Revealed on Tap) -->
+                <div class="answer-box" id="answerBox">
+                    <div style="font-size: 0.75rem; font-weight: 700; color: var(--color-verdigris); text-transform: uppercase; margin-bottom: 4px;">Answer & Explanation</div>
+                    <div class="answer-text" th:text="${flashcard.answer}">Answer text</div>
+                    <div class="explanation-text" th:if="${flashcard.explanation != null and !flashcard.explanation.isEmpty()}" th:text="${flashcard.explanation}">Explanation text</div>
+
+                    <div th:if="${flashcard.exampleCode != null and !flashcard.exampleCode.isEmpty()}">
+                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-muted); margin-top: 8px;">Example Code:</div>
+                        <pre class="code-example" th:text="${flashcard.exampleCode}"></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tap Reveal Button -->
+            <div id="revealContainer" style="margin-top: 20px;">
+                <button type="button" class="btn btn-primary btn-block" id="btnShowAnswer">
+                    👁️ Show Answer
+                </button>
+            </div>
+
+            <!-- Leitner Rating Buttons (Shown after reveal) -->
+            <div class="rating-controls" id="ratingControls">
+                <button type="button" class="btn btn-forgot" onclick="submitRating('FORGOT')">
+                    🔴 Forgot
+                </button>
+                <button type="button" class="btn btn-almost" onclick="submitRating('ALMOST')">
+                    🟡 Almost
+                </button>
+                <button type="button" class="btn btn-easy" onclick="submitRating('EASY')">
+                    🟢 Easy
+                </button>
+            </div>
+        </div>
+
+        <!-- Next / Previous Navigation Controls -->
+        <div class="nav-buttons-bar">
+            <a th:if="${flashcard.prevFlashcardId != null}" th:href="@{/flashcards/{id}(id=${flashcard.prevFlashcardId})}" class="btn btn-outline">
+                ← Previous
+            </a>
+            <span th:unless="${flashcard.prevFlashcardId != null}" class="btn btn-outline" style="opacity: 0.4; pointer-events: none;">
+                ← Previous
+            </span>
+
+            <a th:if="${flashcard.nextFlashcardId != null}" th:href="@{/flashcards/{id}(id=${flashcard.nextFlashcardId})}" class="btn btn-primary" id="btnNextCard">
+                Next Card →
+            </a>
+            <a th:unless="${flashcard.nextFlashcardId != null}" th:href="@{/subjects/{id}(id=${flashcard.subjectId})}" class="btn btn-primary">
+                Done (Back to Subject) ✓
+            </a>
+        </div>
+    </div>
+
+    <!-- AJAX Script for Front/Back Reveal, Leitner Rating, and Bookmarking -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const flashcardId = /*[[${flashcard.id}]]*/ 1;
+        let isBookmarked = /*[[${flashcard.bookmarked}]]*/ false;
+        const csrfToken = /*[[${_csrf.token}]]*/ '';
+        const csrfHeader = /*[[${_csrf.headerName}]]*/ 'X-CSRF-TOKEN';
+        const nextCardUrl = /*[[${flashcard.nextFlashcardId != null ? '/flashcards/' + flashcard.nextFlashcardId : '/subjects/' + flashcard.subjectId}]]*/ '/subjects';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnShowAnswer = document.getElementById('btnShowAnswer');
+            const answerBox = document.getElementById('answerBox');
+            const revealContainer = document.getElementById('revealContainer');
+            const ratingControls = document.getElementById('ratingControls');
+            const bookmarkBtn = document.getElementById('bookmarkBtn');
+
+            if (btnShowAnswer) {
+                btnShowAnswer.addEventListener('click', function() {
+                    answerBox.classList.add('visible');
+                    revealContainer.style.display = 'none';
+                    ratingControls.classList.add('visible');
+                });
+            }
+
+            if (bookmarkBtn) {
+                bookmarkBtn.addEventListener('click', function() {
+                    const method = isBookmarked ? 'DELETE' : 'POST';
+                    const url = isBookmarked ? '/api/bookmarks/FLASHCARD/' + flashcardId : '/api/bookmarks';
+                    const options = {
+                        method: method,
+                        headers: {
+                            [csrfHeader]: csrfToken
+                        }
+                    };
+                    if (!isBookmarked) {
+                        options.headers['Content-Type'] = 'application/json';
+                        options.body = JSON.stringify({ contentType: 'FLASHCARD', contentId: flashcardId });
+                    }
+
+                    fetch(url, options)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                isBookmarked = data.bookmarked;
+                                bookmarkBtn.innerHTML = isBookmarked ? '🔖' : '📑';
+                                bookmarkBtn.title = isBookmarked ? 'Remove Bookmark' : 'Add Bookmark';
+                            }
+                        })
+                        .catch(err => console.error('Error toggling bookmark:', err));
+                });
+            }
+        });
+
+        function submitRating(ratingValue) {
+            fetch('/api/flashcards/' + flashcardId + '/review', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify({ rating: ratingValue })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const badge = document.getElementById('boxLevelBadge');
+                    if (badge) {
+                        badge.textContent = 'Box ' + data.boxLevel + '/5';
+                    }
+                    // Automatically transition to next card after rating
+                    window.location.href = nextCardUrl;
+                }
+            })
+            .catch(err => {
+                console.error('Error recording review:', err);
+                window.location.href = nextCardUrl;
+            });
+        }
+        /*]]>*/
+    </script>
+</div>
+
+</body>
+</html>

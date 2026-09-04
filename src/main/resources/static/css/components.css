@@ -1,0 +1,181 @@
+/* Cards */
+.card {
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-pale-dogwood);
+    padding: var(--space-md);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: var(--space-md);
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-sm);
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text-dark);
+}
+
+/* Buttons with Min 44px Tap Target */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--tap-target-min);
+    min-width: var(--tap-target-min);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all 0.2s ease;
+    text-align: center;
+    gap: var(--space-xs);
+}
+
+.btn-primary {
+    background-color: var(--color-verdigris);
+    color: var(--color-white);
+    box-shadow: 0 4px 10px rgba(117, 185, 191, 0.25);
+}
+
+.btn-primary:hover {
+    background-color: #5FA5AC;
+    color: var(--color-white);
+}
+
+.btn-secondary {
+    background-color: var(--color-light-blue);
+    color: var(--color-text-dark);
+}
+
+.btn-secondary:hover {
+    background-color: #A4D2CF;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border-color: var(--color-verdigris);
+    color: var(--color-verdigris);
+}
+
+.btn-outline:hover {
+    background-color: var(--color-verdigris);
+    color: var(--color-white);
+}
+
+.btn-accent {
+    background-color: var(--color-misty-rose);
+    color: var(--color-text-dark);
+    border-color: var(--color-pale-dogwood);
+}
+
+.btn-accent:hover {
+    background-color: #F8CBC0;
+}
+
+.btn-sm {
+    min-height: 36px;
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.85rem;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+/* Badges */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-success {
+    background-color: #E8F5E9;
+    color: var(--color-success);
+}
+
+.badge-warning {
+    background-color: #FFF3E0;
+    color: var(--color-warning);
+}
+
+.badge-error {
+    background-color: #FFEBEE;
+    color: var(--color-error);
+}
+
+.badge-info {
+    background-color: #E0F7FA;
+    color: var(--color-verdigris);
+}
+
+/* Form Controls */
+.form-group {
+    margin-bottom: var(--space-md);
+}
+
+.form-label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: var(--space-xs);
+    color: var(--color-text-dark);
+}
+
+.form-control {
+    width: 100%;
+    min-height: var(--tap-target-min);
+    padding: var(--space-sm) var(--space-md);
+    border: 1.5px solid var(--color-pale-dogwood);
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    background-color: #FAFAFA;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus {
+    border-color: var(--color-verdigris);
+    box-shadow: 0 0 0 3px rgba(117, 185, 191, 0.2);
+    background-color: var(--color-white);
+}
+
+/* Stat & Progress Components */
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-md);
+    background: var(--color-white);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-pale-dogwood);
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--color-text-dark);
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+}

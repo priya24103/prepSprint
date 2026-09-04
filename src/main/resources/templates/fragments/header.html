@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+<header th:fragment="header" class="app-header">
+    <div class="brand-logo">
+        <a th:href="@{/dashboard}">Prep<span>Sprint</span></a>
+    </div>
+
+    <div class="user-badge" sec:authorize="isAuthenticated()">
+        <span sec:authentication="name">User</span>
+        <span class="badge badge-info" sec:authorize="hasRole('ADMIN')">ADMIN</span>
+    </div>
+</header>
+
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::#content}, 'subjects')}">
+<head>
+    <title th:text="${subject.name} + ' Topics - PrepSprint'">Subject Detail - PrepSprint</title>
+</head>
+<body>
+
+<div id="content">
+    <style>
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            margin-bottom: var(--space-xs);
+        }
+
+        .breadcrumb a {
+            color: var(--color-verdigris);
+        }
+
+        .detail-header {
+            background: var(--color-white);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-pale-dogwood);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        .topic-card {
+            border-left: 4px solid var(--color-verdigris);
+            margin-bottom: var(--space-md);
+        }
+
+        .topic-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-md);
+            margin: var(--space-sm) 0;
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+        }
+
+        .topic-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+            margin-top: var(--space-md);
+        }
+
+        .progress-bar-bg {
+            background-color: var(--color-alabaster);
+            border-radius: var(--radius-full);
+            height: 8px;
+            width: 100%;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .progress-bar-fill {
+            background-color: var(--color-verdigris);
+            height: 100%;
+            border-radius: var(--radius-full);
+        }
+    </style>
+
+    <div class="breadcrumb">
+        <a th:href="@{/subjects}">Subjects</a> &gt; <span th:text="${subject.name}">Java/OOP</span>
+    </div>
+
+    <!-- Subject Header -->
+    <div class="detail-header">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
+            <div>
+                <h1 th:text="${subject.name}">Java/OOP</h1>
+                <p th:text="${subject.description}">Core Java language concepts, Object-Oriented Programming, Collections, and JVM fundamentals.</p>
+            </div>
+            <span class="badge badge-info" th:text="${subject.topicCount} + ' Topics Included'">5 Topics Included</span>
+        </div>
+    </div>
+
+    <!-- Search & Filter Controls -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: var(--space-lg);">
+        <div class="filter-chips">
+            <a th:href="@{/subjects/{id}(id=${subject.id}, filter='ALL', search=${search})}" class="chip" th:classappend="${currentFilter == 'ALL' ? 'active' : ''}">All Topics</a>
+            <a th:href="@{/subjects/{id}(id=${subject.id}, filter='WEAK', search=${search})}" class="chip" th:classappend="${currentFilter == 'WEAK' ? 'active' : ''}">⚠️ Weak Topics</a>
+            <a th:href="@{/subjects/{id}(id=${subject.id}, filter='UNATTEMPTED', search=${search})}" class="chip" th:classappend="${currentFilter == 'UNATTEMPTED' ? 'active' : ''}">🆕 Unattempted</a>
+            <a th:href="@{/subjects/{id}(id=${subject.id}, filter='BOOKMARKED', search=${search})}" class="chip" th:classappend="${currentFilter == 'BOOKMARKED' ? 'active' : ''}">🔖 Bookmarked</a>
+        </div>
+
+        <form th:action="@{/subjects/{id}(id=${subject.id})}" method="get" class="search-box">
+            <input type="hidden" name="filter" th:value="${currentFilter}" />
+            <input type="text" name="search" class="search-input" placeholder="Search topics..." th:value="${search}" />
+        </form>
+    </div>
+
+    <!-- Topics List -->
+    <div th:if="${#lists.isEmpty(topics)}" class="card" style="text-align: center; padding: 32px;">
+        <p>No topics match your filter or search criteria.</p>
+        <a th:href="@{/subjects/{id}(id=${subject.id})}" class="btn btn-sm btn-outline" style="margin-top: 12px;">Reset Filter</a>
+    </div>
+
+    <div th:unless="${#lists.isEmpty(topics)}">
+        <div th:each="topic : ${topics}" class="card topic-card">
+            <div class="card-header">
+                <h3 class="card-title" th:text="${topic.name}">Classes & Objects</h3>
+                <span class="badge badge-warning">Not Started</span>
+            </div>
+
+            <p th:text="${topic.description}">Placeholder description for Classes & Objects</p>
+
+            <div class="topic-meta">
+                <span>🎴 <strong th:text="${topic.flashcardCount}">3</strong> Flashcards</span>
+                <span>📐 <strong th:text="${topic.formulaCount}">0</strong> Formulas</span>
+                <span>📝 <strong th:text="${topic.mcqCount}">2</strong> MCQs</span>
+                <span>Accuracy: <strong th:text="${#numbers.formatDecimal(topic.accuracyPercentage, 1, 1)} + '%'">0.0%</strong></span>
+            </div>
+
+            <!-- Progress Bar -->
+            <div style="margin-top: 8px;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--color-text-muted);">
+                    <span>Progress</span>
+                    <span th:text="${#numbers.formatDecimal(topic.progressPercentage, 1, 1)} + '%'">0.0%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" th:style="'width: ' + ${topic.progressPercentage} + '%;'"></div>
+                </div>
+            </div>
+
+            <!-- Topic Actions -->
+            <div class="topic-actions">
+                <a th:href="@{/flashcards/{topicId}(topicId=${topic.id})}" class="btn btn-sm btn-secondary">
+                    🎴 Review Flashcards
+                </a>
+                <a th:href="@{/quiz/topic/{topicId}(topicId=${topic.id})}" class="btn btn-sm btn-primary">
+                    📝 Start MCQ Quiz
+                </a>
+                <a th:href="@{/formulas(topicId=${topic.id})}" class="btn btn-sm btn-accent" th:if="${topic.formulaCount > 0}">
+                    📐 View Formulas
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

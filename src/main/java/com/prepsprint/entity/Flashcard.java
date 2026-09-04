@@ -2,17 +2,11 @@ package com.prepsprint.entity;
 
 import com.prepsprint.enums.Difficulty;
 import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
 @Table(name = "flashcards", indexes = {
         @Index(name = "idx_flashcards_topic_id", columnList = "topic_id")
 })
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Flashcard {
 
     @Id
@@ -44,4 +38,91 @@ public class Flashcard {
 
     @Column(nullable = false)
     private boolean active = true;
+
+    public Flashcard() {
+    }
+
+    public Flashcard(Long id, Topic topic, String question, String answer, String explanation, String exampleCode, Difficulty difficulty, int priority, boolean active) {
+        this.id = id;
+        this.topic = topic;
+        this.question = question;
+        this.answer = answer;
+        this.explanation = explanation;
+        this.exampleCode = exampleCode;
+        this.difficulty = difficulty;
+        this.priority = priority;
+        this.active = active;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Topic getTopic() {
+        return topic;
+    }
+
+    public void setTopic(Topic topic) {
+        this.topic = topic;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    public String getExplanation() {
+        return explanation;
+    }
+
+    public void setExplanation(String explanation) {
+        this.explanation = explanation;
+    }
+
+    public String getExampleCode() {
+        return exampleCode;
+    }
+
+    public void setExampleCode(String exampleCode) {
+        this.exampleCode = exampleCode;
+    }
+
+    public Difficulty getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }

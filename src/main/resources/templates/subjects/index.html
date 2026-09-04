@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::#content}, 'subjects')}">
+<head>
+    <title>Subjects & Topics - PrepSprint</title>
+</head>
+<body>
+
+<div id="content">
+    <style>
+        .page-header {
+            margin-bottom: var(--space-lg);
+        }
+
+        .filter-search-container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+
+        @media (min-width: 768px) {
+            .filter-search-container {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: var(--space-xs);
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .chip {
+            padding: 8px 16px;
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+            font-weight: 600;
+            background-color: var(--color-white);
+            color: var(--color-text-dark);
+            border: 1px solid var(--color-pale-dogwood);
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .chip:hover {
+            background-color: var(--color-light-blue);
+        }
+
+        .chip.active {
+            background-color: var(--color-verdigris);
+            color: var(--color-white);
+            border-color: var(--color-verdigris);
+        }
+
+        .search-box {
+            position: relative;
+            min-width: 260px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 16px;
+            padding-right: 40px;
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--color-pale-dogwood);
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .search-input:focus {
+            border-color: var(--color-verdigris);
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-md);
+        }
+
+        @media (min-width: 640px) {
+            .subjects-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .subjects-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .subject-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+    </style>
+
+    <div class="page-header">
+        <h1>📚 Core CS & Placement Subjects</h1>
+        <p>Select a subject to explore topics, practice flashcards, MCQs, and formulas.</p>
+    </div>
+
+    <!-- Filter Chips & Search Bar -->
+    <div class="filter-search-container">
+        <div class="filter-chips">
+            <a th:href="@{/subjects(filter='ALL', search=${search})}" class="chip" th:classappend="${currentFilter == 'ALL' ? 'active' : ''}">All Subjects</a>
+            <a th:href="@{/subjects(filter='WEAK', search=${search})}" class="chip" th:classappend="${currentFilter == 'WEAK' ? 'active' : ''}">⚠️ Weak Topics</a>
+            <a th:href="@{/subjects(filter='UNATTEMPTED', search=${search})}" class="chip" th:classappend="${currentFilter == 'UNATTEMPTED' ? 'active' : ''}">🆕 Unattempted</a>
+            <a th:href="@{/subjects(filter='BOOKMARKED', search=${search})}" class="chip" th:classappend="${currentFilter == 'BOOKMARKED' ? 'active' : ''}">🔖 Bookmarked</a>
+        </div>
+
+        <form th:action="@{/subjects}" method="get" class="search-box">
+            <input type="hidden" name="filter" th:value="${currentFilter}" />
+            <input type="text" name="search" class="search-input" placeholder="Search subjects & topics..." th:value="${search}" />
+        </form>
+    </div>
+
+    <!-- Subjects Grid -->
+    <div class="subjects-grid">
+        <div th:each="subject : ${subjects}" class="card subject-card">
+            <div>
+                <div class="card-header">
+                    <h2 class="card-title" th:text="${subject.name}">Java/OOP</h2>
+                    <span class="badge badge-info" th:text="${subject.topicCount} + ' Topics'">5 Topics</span>
+                </div>
+                <p style="margin-bottom: var(--space-md);" th:text="${subject.description}">Core Java language concepts, Object-Oriented Programming, Collections, and JVM fundamentals.</p>
+            </div>
+
+            <div>
+                <a th:href="@{/subjects/{id}(id=${subject.id})}" class="btn btn-secondary btn-block">
+                    Explore Topics →
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

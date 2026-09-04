@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::#content}, 'quiz')}">
+<head>
+    <title>MCQ Practice & Quizzes - PrepSprint</title>
+</head>
+<body>
+
+<div id="content">
+    <style>
+        .quiz-launcher-card {
+            max-width: 680px;
+            margin: 0 auto;
+            background: var(--color-white);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-pale-dogwood);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .mode-selector-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-sm);
+            margin: var(--space-md) 0;
+        }
+
+        @media (min-width: 600px) {
+            .mode-selector-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .mode-option-btn {
+            background-color: var(--color-alabaster);
+            border: 2px solid var(--color-pale-dogwood);
+            border-radius: var(--radius-md);
+            padding: var(--space-md) var(--space-sm);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .mode-option-btn:hover {
+            border-color: var(--color-verdigris);
+        }
+
+        .mode-option-btn.selected {
+            background-color: var(--color-light-blue);
+            border-color: var(--color-verdigris);
+            font-weight: 700;
+        }
+
+        .mode-icon {
+            font-size: 1.8rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .mode-label {
+            font-size: 0.9rem;
+            color: var(--color-text-dark);
+        }
+    </style>
+
+    <div class="quiz-launcher-card">
+        <div style="text-align: center; margin-bottom: var(--space-lg);">
+            <h1>📝 MCQ Practice & Quizzes</h1>
+            <p>Customize your practice session or pick a rapid sprint mode.</p>
+        </div>
+
+        <form id="quizStartForm">
+            <!-- Mode Selection -->
+            <label style="font-weight: 700; color: var(--color-text-dark); font-size: 0.95rem;">
+                Choose Practice Mode:
+            </label>
+            <div class="mode-selector-grid">
+                <div class="mode-option-btn selected" onclick="selectMode('TOPIC', this)">
+                    <span class="mode-icon">📌</span>
+                    <span class="mode-label">Topic-Wise</span>
+                </div>
+                <div class="mode-option-btn" onclick="selectMode('SUBJECT', this)">
+                    <span class="mode-icon">📚</span>
+                    <span class="mode-label">Subject-Wise</span>
+                </div>
+                <div class="mode-option-btn" onclick="selectMode('RANDOM', this)">
+                    <span class="mode-icon">🎲</span>
+                    <span class="mode-label">Random Mix</span>
+                </div>
+                <div class="mode-option-btn" onclick="selectMode('WEAK', this)">
+                    <span class="mode-icon">⚠️</span>
+                    <span class="mode-label">Weak Topics</span>
+                </div>
+                <div class="mode-option-btn" onclick="selectMode('BOOKMARK', this)">
+                    <span class="mode-icon">🔖</span>
+                    <span class="mode-label">Bookmarked</span>
+                </div>
+                <div class="mode-option-btn" onclick="selectMode('MIXED', this)">
+                    <span class="mode-icon">⚡</span>
+                    <span class="mode-label">Mixed Test</span>
+                </div>
+            </div>
+            <input type="hidden" id="selectedMode" name="mode" value="TOPIC" />
+
+            <!-- Dynamic Dropdowns for Subject / Topic -->
+            <div id="subjectGroup" class="form-group" style="margin-top: 16px;">
+                <label for="subjectSelect" class="form-label">Select Subject:</label>
+                <select id="subjectSelect" name="subjectId" class="form-control" onchange="filterTopicsBySubject()">
+                    <option value="">-- All Subjects --</option>
+                    <option th:each="s : ${subjects}" th:value="${s.id}" th:text="${s.name}">Subject</option>
+                </select>
+            </div>
+
+            <div id="topicGroup" class="form-group">
+                <label for="topicSelect" class="form-label">Select Topic:</label>
+                <select id="topicSelect" name="topicId" class="form-control">
+                    <option value="">-- Select Topic --</option>
+                    <option th:each="t : ${topics}" th:value="${t.id}" th:data-subject="${t.subject.id}" th:text="${t.name}">Topic</option>
+                </select>
+            </div>
+
+            <!-- Options: Question Count & Timer -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-top: 16px;">
+                <div class="form-group">
+                    <label for="questionCount" class="form-label">Number of Questions:</label>
+                    <select id="questionCount" name="questionCount" class="form-control">
+                        <option value="5">5 Questions</option>
+                        <option value="10" selected>10 Questions</option>
+                        <option value="15">15 Questions</option>
+                        <option value="20">20 Questions</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="timerSeconds" class="form-label">Timer Mode:</label>
+                    <select id="timerSeconds" name="timerSeconds" class="form-control">
+                        <option value="">Untimed (Practice)</option>
+                        <option value="300">5 Minutes</option>
+                        <option value="600">10 Minutes</option>
+                        <option value="900">15 Minutes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="margin-top: 24px;">
+                <button type="button" class="btn btn-primary btn-block btn-lg" onclick="launchQuiz()">
+                    🚀 Start Quiz Attempt
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const csrfToken = /*[[${_csrf.token}]]*/ '';
+        const csrfHeader = /*[[${_csrf.headerName}]]*/ 'X-CSRF-TOKEN';
+
+        function selectMode(mode, element) {
+            document.querySelectorAll('.mode-option-btn').forEach(btn => btn.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('selectedMode').value = mode;
+
+            const subjectGroup = document.getElementById('subjectGroup');
+            const topicGroup = document.getElementById('topicGroup');
+
+            if (mode === 'TOPIC') {
+                subjectGroup.style.display = 'block';
+                topicGroup.style.display = 'block';
+            } else if (mode === 'SUBJECT') {
+                subjectGroup.style.display = 'block';
+                topicGroup.style.display = 'none';
+            } else {
+                subjectGroup.style.display = 'none';
+                topicGroup.style.display = 'none';
+            }
+        }
+
+        function filterTopicsBySubject() {
+            const subjectId = document.getElementById('subjectSelect').value;
+            const topicSelect = document.getElementById('topicSelect');
+            const options = topicSelect.querySelectorAll('option');
+
+            options.forEach(opt => {
+                if (!opt.value) return;
+                const optSub = opt.getAttribute('data-subject');
+                if (!subjectId || optSub === subjectId) {
+                    opt.style.display = 'block';
+                } else {
+                    opt.style.display = 'none';
+                }
+            });
+            topicSelect.value = "";
+        }
+
+        function launchQuiz() {
+            const mode = document.getElementById('selectedMode').value;
+            const subjectId = document.getElementById('subjectSelect').value;
+            const topicId = document.getElementById('topicSelect').value;
+            const count = parseInt(document.getElementById('questionCount').value);
+            const timer = document.getElementById('timerSeconds').value;
+
+            const payload = {
+                mode: mode,
+                subjectId: subjectId ? parseInt(subjectId) : null,
+                topicId: topicId ? parseInt(topicId) : null,
+                questionCount: count,
+                timerSeconds: timer ? parseInt(timer) : null
+            };
+
+            fetch('/api/quizzes/start', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.attemptId) {
+                    window.location.href = '/quiz/attempt/' + data.attemptId;
+                } else {
+                    alert('Error starting quiz. Please check your options.');
+                }
+            })
+            .catch(err => {
+                console.error('Error starting quiz:', err);
+                alert('Failed to launch quiz attempt.');
+            });
+        }
+        /*]]>*/
+    </script>
+</div>
+
+</body>
+</html>

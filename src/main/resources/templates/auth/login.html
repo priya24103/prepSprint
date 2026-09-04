@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - PrepSprint</title>
+    <style>
+        :root {
+            --verdigris: #75B9BF;
+            --light-blue: #B7DDDA;
+            --alabaster: #F2ECE1;
+            --misty-rose: #FCDDD3;
+            --pale-dogwood: #E6C4B7;
+            --dark-text: #243238;
+            --muted-text: #68777B;
+            --success: #5A9E72;
+            --error: #C96B6B;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--alabaster);
+            color: var(--dark-text);
+            display: flex;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(36, 50, 56, 0.08);
+            width: 100%;
+            max-width: 420px;
+            padding: 32px 24px;
+            border: 1px solid var(--pale-dogwood);
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .brand-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--dark-text);
+            letter-spacing: -0.5px;
+        }
+
+        .brand-title span {
+            color: var(--verdigris);
+        }
+
+        .brand-subtitle {
+            font-size: 14px;
+            color: var(--muted-text);
+            margin-top: 4px;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background-color: #E8F5E9;
+            color: var(--success);
+            border: 1px solid #C8E6C9;
+        }
+
+        .alert-error {
+            background-color: #FFEBEE;
+            color: var(--error);
+            border: 1px solid #FFCDD2;
+        }
+
+        .alert-info {
+            background-color: #E0F7FA;
+            color: #00838F;
+            border: 1px solid #B2EBF2;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark-text);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid var(--pale-dogwood);
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background-color: #FAFAFA;
+        }
+
+        .form-input:focus {
+            border-color: var(--verdigris);
+            box-shadow: 0 0 0 3px rgba(117, 185, 191, 0.2);
+            background-color: #FFFFFF;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--verdigris);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 4px 12px rgba(117, 185, 191, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: #5FA5AC;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.99);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 14px;
+            color: var(--muted-text);
+        }
+
+        .auth-footer a {
+            color: var(--verdigris);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="auth-card">
+    <div class="brand-header">
+        <h1 class="brand-title">Prep<span>Sprint</span></h1>
+        <p class="brand-subtitle">Revise Smart. Be Placement Ready.</p>
+    </div>
+
+    <!-- Alert Messages -->
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+    <div th:if="${infoMessage}" class="alert alert-info" th:text="${infoMessage}"></div>
+
+    <form th:action="@{/auth/login}" method="post" th:object="${loginDto}">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+        <div class="form-group">
+            <label class="form-label" for="email">Email Address</label>
+            <input type="email" id="email" name="email" class="form-input" th:field="*{email}" placeholder="student@example.com" required autofocus />
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <input type="password" id="password" name="password" class="form-input" th:field="*{password}" placeholder="••••••••" required />
+        </div>
+
+        <button type="submit" class="btn-primary">Log In</button>
+    </form>
+
+    <div class="auth-footer">
+        Don't have an account? <a th:href="@{/auth/register}">Register here</a>
+    </div>
+</div>
+
+</body>
+</html>
