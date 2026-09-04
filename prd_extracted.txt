@@ -1,0 +1,723 @@
+PREPSPRINT
+FINAL WEB PRODUCT REQUIREMENTS DOCUMENT + TECHNICAL BUILD SPECIFICATION
+Revise Smart. Be Placement Ready. | Version 3.0 | Responsive mobile-first web application | 5-day MVP
+0. Critical Build Directive for Antigravity
+Build PrepSprint as a complete, deployable, mobile-first web application. The primary use case is a student revising on a phone immediately before a placement test/interview, while the same application must work well on laptop/desktop.
+Use Java 17+, Spring Boot, Spring Data JPA, MySQL, Maven, Thymeleaf, HTML5, CSS3 and vanilla JavaScript. Use REST endpoints where useful for asynchronous interactions, but do not introduce React or another frontend framework for the 5-day MVP.
+The application must be a real full-stack Java project: Java/Spring Boot contains business logic and persistence integration; Thymeleaf/HTML/CSS/JS provide the responsive interface. Build P0 first, then P1, then polish and deployment.
+1. Product Vision
+PrepSprint is a last-minute placement revision companion. It centralizes Core CS concepts, DSA, aptitude formulas, logical/verbal practice, MCQs, flashcards, technical interview questions and HR interview preparation. Its differentiator is guided revision: performance identifies weak areas, and the system turns that information into short Sprint sessions and Placement Day sessions.
+Core loop: Learn -> Practice -> Measure -> Identify Weakness -> Recommend -> Revise.
+2. Goals
+Make placement revision accessible anywhere from a phone browser.
+Provide fast, scannable content instead of long notes.
+Generate useful 15/30/60-minute revision sessions.
+Track performance, weaknesses, bookmarks, activity and streak.
+Provide Core Java/Spring Boot/SQL concepts that can be explained in a viva.
+Deliver a polished responsive interface suitable for both phone and desktop.
+2.1 Non-goals for 5-day MVP
+AI chatbot/generation
+Cloud sync beyond normal deployed web persistence
+Mobile native application
+Live multiplayer
+Payments
+Real-time company APIs
+Online code compiler
+Microservices
+Complex notification infrastructure
+3. Locked Technology Stack
+Layer
+Technology
+Rule
+Backend language
+Java 17+
+Readable modern Java.
+Backend framework
+Spring Boot 3.x
+Controllers, services, dependency injection.
+Persistence
+Spring Data JPA / Hibernate
+Entity mapping and repository operations.
+Database
+MySQL 8+
+Persistent relational database.
+Build
+Maven
+Single reproducible project.
+Frontend templates
+Thymeleaf
+Server-rendered initial pages; simple integration with Spring Boot.
+Frontend
+HTML5 + CSS3 + vanilla JavaScript
+No React/Vue/Angular for MVP.
+API
+REST endpoints where useful
+JSON responses for dynamic quiz/session interactions.
+Security
+Spring Security
+Role-based access; BCrypt password hashing.
+Testing
+JUnit 5 + Spring Boot Test
+Services, repositories and controller flows.
+Deployment
+Any simple Java-compatible cloud host
+Use environment variables for DB credentials.
+PWA
+Web App Manifest + Service Worker
+Installable mobile experience; graceful fallback if offline.
+4. Brand & UI Design System
+Token
+Hex
+Use
+Verdigris
+#75B9BF
+Primary brand, active navigation, primary CTA
+Light Blue
+#B7DDDA
+Secondary controls, selected/soft cards
+Alabaster
+#F2ECE1
+Main page background
+Misty Rose
+#FCDDD3
+Accent/special cards
+Pale Dogwood
+#E6C4B7
+Borders/supporting accents
+White
+#FFFFFF
+Card surfaces
+Dark text
+#243238
+Primary text
+Muted text
+#68777B
+Secondary text
+Success
+#5A9E72
+Correct/Strong
+Warning
+#D69A4A
+Needs Practice
+Error
+#C96B6B
+Weak/Incorrect
+Use a light, calm, modern visual style. Do not introduce unrelated nude/beige colors. Approximate balance: 70% neutral/white, 15% Verdigris, 10% Light Blue, 5% Misty Rose/Pale Dogwood. Do not depend on color alone for status.
+5. Responsive / Mobile-First Requirement
+Mobile responsiveness is mandatory, not an optional enhancement. Design for approximately 320px-480px phone widths first, then tablet and desktop.
+Viewport
+UI behavior
+Mobile
+Single-column content, compact cards, large tap targets, bottom navigation, collapsible menu, sticky primary actions.
+Tablet
+Two-column cards where useful; navigation can become compact sidebar/top navigation.
+Desktop
+Persistent sidebar, multi-column dashboard, wider content cards and charts.
+Minimum tap target around 44px where practical.
+No horizontal scrolling for normal content.
+Readable font sizes and adequate spacing.
+Quiz options must be easy to tap.
+Flashcards must fit comfortably on a phone screen.
+Timer must remain visible without covering content.
+Use CSS media queries and flexible grid/flex layouts.
+Test common widths such as 360px, 390px, 414px, 768px and desktop 1366px.
+6. Roles
+Role
+Access
+STUDENT
+All revision, quiz, analytics, bookmarks, profile and session features.
+ADMIN
+Student features plus content CRUD, priority/difficulty, activation/deactivation and content statistics.
+7. Complete Feature Scope
+Module
+Functions
+Priority
+Authentication
+Register, login, logout, BCrypt hash, role routing, validation
+P0
+Dashboard
+Progress, stats, weak topics, recommendation, quick actions, activity
+P0/P1
+Subjects
+Subjects, topics, search, filters, progress
+P0
+Flashcards
+Reveal, Forgot/Almost/Easy, bookmark, history, smart priority
+P0
+Formula Vault
+Categories, search, shortcuts, examples, bookmark, quick mode
+P0
+MCQ Practice
+Topic/subject/random/weak/bookmark/mixed modes, timer, scoring
+P0
+Results
+Score, accuracy, breakdown, retry, wrong/weak practice
+P0
+Weak Topics
+Thresholds, accuracy, targeted revision
+P1
+Sprint Revision
+15/30/60/custom timed sessions
+P1
+Placement Day
+Cross-subject high-priority revision
+P1
+Bookmarks
+All content types
+P0
+Progress
+Overall/subject/topic analytics + charts
+P0
+Streak
+Consecutive active revision days
+P1
+Recent Activity
+Revision/quiz/session history
+P1
+Global Search
+All active content
+P1
+Technical Interview
+Question, intent, answers, key points, tips
+P1
+HR Interview
+Question, intent, answer structure, guidance, tips
+P1
+Admin
+CRUD shared content
+P1
+8. Content Areas
+Area
+Topics
+Java/OOP
+Classes/objects, encapsulation, inheritance, polymorphism, abstraction, interfaces, exceptions, strings, collections, generics, JVM/JDK/JRE, Java 8+ basics, multithreading
+DSA
+Complexity, arrays, strings, linked list, stack, queue, hashing, trees/BST, heap, graphs, sorting, searching, recursion, DP basics
+DBMS
+Keys, normalization, SQL, joins, subqueries, transactions, ACID, indexing, views, constraints
+OS
+Process/thread, scheduling, deadlock, synchronization, paging, virtual memory, memory management, file systems
+CN
+OSI/TCP-IP, IP, TCP/UDP, HTTP/HTTPS, DNS, routing, switching, error detection/correction, delays
+Quant Aptitude
+Percentage, profit/loss, ratio, average, SI/CI, time/work, pipes, speed/distance, probability, P&C, number system, algebra, ages, mixtures
+Logical Reasoning
+Series, coding-decoding, blood relations, directions, syllogism, seating, puzzles, data sufficiency
+Verbal
+Grammar, vocabulary, synonyms/antonyms, reading comprehension, sentence correction
+Technical Interview
+Java/OOP, DSA, SQL/DBMS, OS, CN, project questions
+HR Interview
+Introduction, strengths, weakness, teamwork, conflict, goals, company motivation, relocation, challenges
+9. Student Functional Requirements
+9.1 Authentication
+Register name/email/password/confirm password.
+Unique email.
+BCrypt password hash.
+Login/logout.
+Role-based routing.
+Session-authenticated pages.
+Validation errors shown inline.
+Unauthenticated users cannot access protected pages.
+9.2 Dashboard
+Welcome message.
+Overall preparation score.
+Questions solved/correct.
+Flashcards reviewed.
+Formulas revised.
+Quiz accuracy.
+Current streak.
+Bookmark count.
+Weak topics.
+Recent activity.
+Quick actions: 15 Min, 30 Min, 60 Min, Placement Day.
+Recommend My Next Revision card with reason and estimated time.
+9.3 Subjects & Topics
+Subject cards.
+Subject -> topics.
+Topic progress/accuracy/content counts.
+Filters: All, Weak, Unattempted, Bookmarked.
+Search.
+Topic actions for flashcards/MCQs/interview content.
+9.4 Flashcards
+Front/back card interaction.
+Show Answer.
+Forgot / Almost / Easy.
+Next/previous.
+Bookmark.
+Subject/topic/difficulty/priority.
+Review history.
+Smart priority.
+Use a simple Leitner-style system. Forgot -> lower/early review; Almost -> medium; Easy -> higher box/lower frequency. No complex ML.
+9.5 Formula Vault
+Formula title/expression.
+Variable definitions.
+Shortcut/tip.
+Worked example.
+Categories.
+Search.
+Bookmark.
+Quick Formula Mode.
+Recently viewed.
+9.6 MCQ Practice
+Four options, one correct option.
+Explanation.
+Difficulty and priority.
+Topic/subject/random/weak/bookmark/mixed modes.
+Optional timer.
+Tap-friendly options.
+Next/previous where enabled.
+Submit once.
+Persist quiz attempt and every question response.
+9.7 Quiz Results
+Score/correct/wrong/skipped/total.
+Accuracy.
+Time.
+Topic/subject breakdown.
+Strong/weak areas.
+Retry.
+Practice Wrong Questions.
+Revise Weak Topics.
+Dashboard.
+Persist history.
+9.8 Weak Topics
+MCQ accuracy is primary signal.
+Minimum 3 attempts.
+<60% Weak; 60-79% Needs Practice; >=80% Strong.
+Fewer than 3 = Not Enough Data.
+Show attempts, accuracy, last activity.
+Flashcard rating may contribute secondary signal.
+Targeted revision button.
+9.9 Sprint Revision
+15/30/60-minute presets.
+Custom 5-180 minutes.
+Mixed flashcards, MCQs, formulas and interview questions.
+Timer and progress.
+Auto-complete at zero.
+Manual finish with confirmation.
+Summary.
+No duplicate item within a session.
+Default mix: 40% flashcards, 35% MCQs, 15% formulas, 10% interview; redistribute when content is insufficient.
+9.10 Placement Day Mode
+Dedicated one-click mode.
+15/30/60 minutes.
+Cross-subject order: Java/OOP -> DBMS/SQL -> OS -> CN -> DSA -> Aptitude -> Technical Interview -> HR.
+Prioritize weak + bookmarked + high-priority + unattempted.
+Reuse Sprint engine with Placement Day weighting.
+Summary.
+9.11 Bookmarks
+Bookmark flashcards, MCQs, formulas, technical and HR questions.
+My Bookmarks page.
+Filter by content type.
+Persist per user.
+Unique constraint.
+9.12 Progress
+Overall preparation score.
+Subject accuracy/progress.
+Topic accuracy.
+Questions solved/correct.
+Flashcards reviewed.
+Formulas revised.
+Quizzes/sessions completed.
+Streak.
+Charts.
+9.13 Streak
+A day is active when the student completes at least one meaningful action: MCQ, flashcard review, formula review, interview review or revision session. Calculate consecutive LocalDate values from activity records.
+9.14 Recent Activity
+Quiz completed.
+Flashcards reviewed.
+Formula activity.
+Bookmark activity.
+Sprint completed.
+Placement Day completed.
+Show date/time and concise action.
+9.15 Global Search
+Search subjects, topics, flashcards, formulas, MCQs and interview questions.
+Grouped results.
+Open result detail.
+Search active content only.
+9.16 Technical Interview
+Question.
+What interviewer checks.
+Short answer.
+Detailed answer.
+Key points.
+Related topic.
+Tips.
+Search/filter/bookmark.
+9.17 HR Interview
+Question.
+What interviewer evaluates.
+Answer structure.
+Sample guidance.
+Tips.
+Search/filter/bookmark.
+10. Admin
+Dashboard counts.
+CRUD Subjects/Topics.
+CRUD Flashcards.
+CRUD Formulas.
+CRUD MCQs.
+CRUD Technical questions.
+CRUD HR questions.
+Difficulty.
+Priority.
+Active/deactivate.
+Search/filter.
+Confirm destructive actions.
+Role checks in service/controller security.
+11. Web Architecture
+Recommended structure:
+Browser (mobile/desktop)      |HTML/CSS/JavaScript + Thymeleaf      |Spring Boot Controllers / REST endpoints      |Service Layer      |Spring Data JPA Repositories      |MySQL
+Keep controllers thin. Services contain business rules. Repositories contain persistence access. DTOs should be used for API payloads where returning entities directly would expose unnecessary fields.
+12. Suggested Project Structure
+src/main/java/com/prepsprint/  PrepSprintApplication.java  config/    SecurityConfig.java    DatabaseConfig.java  controller/    AuthController.java    DashboardController.java    SubjectController.java    FlashcardController.java    FormulaController.java    QuizController.java    RevisionController.java    ProgressController.java    InterviewController.java    BookmarkController.java    SearchController.java    AdminController.java    api/  service/    AuthService.java    QuizService.java    FlashcardService.java    FormulaService.java    ProgressService.java    RecommendationService.java    RevisionService.java    BookmarkService.java    SearchService.java    ContentService.java  repository/    UserRepository.java    SubjectRepository.java    TopicRepository.java    FlashcardRepository.java    FormulaRepository.java    QuestionRepository.java    TechnicalQuestionRepository.java    HRQuestionRepository.java    QuizAttemptRepository.java    QuestionAttemptRepository.java    FlashcardReviewRepository.java    BookmarkRepository.java    RevisionSessionRepository.java    SessionItemRepository.java    ActivityLogRepository.java  entity/  dto/  enums/  exception/  util/resources/  templates/    auth/    dashboard/    subjects/    flashcards/    formulas/    quiz/    revision/    interview/    progress/    bookmarks/    admin/  static/    css/    js/    images/  data/    seed/  application.properties
+13. Database Schema
+Table
+Important fields
+users
+id PK, name, email UNIQUE, password_hash, role, created_at, updated_at
+subjects
+id PK, name, description, active, created_at
+topics
+id PK, subject_id FK, name, description, active
+flashcards
+id PK, topic_id FK, question, answer, explanation, example_code, difficulty, priority, active
+formulas
+id PK, topic_id FK, title, formula, variables, shortcut, example, priority, active
+questions
+id PK, topic_id FK, question_text, option_a, option_b, option_c, option_d, correct_option, explanation, difficulty, priority, active
+technical_questions
+id PK, topic_id FK nullable, question, what_interviewer_checks, short_answer, detailed_answer, key_points, tips, priority, active
+hr_questions
+id PK, question, interviewer_intent, answer_structure, sample_guidance, tips, priority, active
+quiz_attempts
+id PK, user_id FK, subject_id FK nullable, mode, score, total, duration_seconds, created_at
+question_attempts
+id PK, attempt_id FK, question_id FK, selected_option, is_correct, answered_at
+flashcard_reviews
+id PK, user_id FK, flashcard_id FK, rating, box_level, reviewed_at
+bookmarks
+id PK, user_id FK, content_type, content_id, created_at, UNIQUE(user_id,content_type,content_id)
+revision_sessions
+id PK, user_id FK, mode, duration_minutes, started_at, completed_at, completed
+session_items
+id PK, session_id FK, content_type, content_id, position, completed, result
+activity_log
+id PK, user_id FK, activity_type, content_type, content_id, metadata, created_at
+Use foreign keys, indexes on FKs and frequent filters, unique email, and transactions for quiz/session writes. Use JPA relationships carefully to avoid unnecessary eager loading.
+14. API / Controller Contract
+Endpoint
+Purpose
+POST /auth/register
+Create student account
+POST /auth/login
+Authenticate user; Spring Security session
+POST /auth/logout
+Logout
+GET /dashboard
+Render dashboard
+GET /subjects
+List subjects
+GET /subjects/{id}
+Topics for subject
+GET /flashcards/{id}
+Flashcard detail
+POST /api/flashcards/{id}/review
+Save Forgot/Almost/Easy
+GET /formulas
+List/search formulas
+POST /api/bookmarks
+Create bookmark
+DELETE /api/bookmarks/{contentType}/{contentId}
+Remove bookmark
+POST /api/quizzes/start
+Generate quiz
+POST /api/quizzes/{id}/submit
+Submit quiz
+GET /quiz/{id}/result
+Result page
+GET /progress
+Progress page
+GET /weak-topics
+Weak topics
+POST /api/revision/start
+Generate Sprint/Placement session
+POST /api/revision/{id}/complete
+Complete session
+GET /interview/technical
+Technical questions
+GET /interview/hr
+HR questions
+GET /search?q=
+Global search
+GET /admin/*
+Admin pages; protected by ADMIN role
+Thymeleaf page routes can render full pages; JavaScript should call /api endpoints for interactive actions such as flashcard review, bookmark toggles, quiz submissions and session updates.
+15. Security
+Use Spring Security.
+Use BCryptPasswordEncoder.
+Protect authenticated routes.
+Protect /admin/** with ADMIN role.
+Use CSRF protection for browser forms; configure appropriately for same-origin AJAX.
+Validate DTOs using Jakarta Validation annotations.
+Do not expose password_hash in DTOs/responses.
+Use server-side authorization even if admin UI is hidden.
+Use environment variables for production DB credentials and secrets.
+Use HTTPS in deployment.
+16. Recommendation Engine
+Use a deterministic weighted score: weaknessScore + unattemptedScore + bookmarkScore + adminPriorityScore + difficultyScore + recencyScore.
+Signal
+Behavior
+Weakness
+Lower topic accuracy -> higher score.
+Unattempted
+Never attempted/reviewed -> strong boost.
+Bookmark
+Bookmarked -> strong boost.
+Priority
+Admin priority 1-5 -> modest boost.
+Difficulty
+Medium/hard -> modest boost.
+Recency
+Long time since review -> boost.
+Duplicates
+Exclude items already in current session.
+Keep weights in RecommendationConfig. Dashboard recommendation should explain why: e.g. 'SQL Joins is weak at 42% accuracy.'
+17. Progress / Scoring
+MCQ percentage = correct / total * 100. Topic classification: fewer than 3 attempts = Not Enough Data; below 60% = Weak; 60-79% = Needs Practice; 80%+ = Strong.
+Recommended overall score: 60% content coverage + 40% quiz accuracy. Define this in ProgressService and use it consistently.
+Content coverage should be based on the proportion of active content meaningfully reviewed/attempted by the user, capped at 100%.
+18. Responsive Screen Specifications
+Screen
+Mobile
+Desktop
+Login
+Centered compact form, large inputs/buttons
+Centered card with branding
+Dashboard
+Single column + quick actions + bottom nav
+Sidebar + multi-column cards
+Subjects
+2-column cards where width permits
+3-4 column grid
+Flashcard
+Large card, tap reveal, bottom action buttons
+Centered card with larger workspace
+Formula Vault
+Search + category chips + stacked cards
+Sidebar/filter + grid
+Quiz
+One question, large tap options, sticky timer
+Centered question panel + side progress
+Result
+Stacked score/breakdown cards
+Two-column analytics
+Sprint
+Large timer + one item at a time
+Timer + content + progress side panel
+Placement Day
+Compact start screen + full-screen revision
+Dashboard-style session
+Weak Topics
+Stacked cards
+Table/card hybrid
+Progress
+Scrollable cards/charts
+Charts + tables
+Interview
+Question cards
+List + detail pane
+Admin
+Responsive tables/cards
+Full data tables/forms
+19. Mobile Navigation
+Use a bottom navigation bar for the most frequent student destinations:
+Home | Subjects | Flashcards | MCQ | More
+The More menu contains Formula Vault, Sprint, Placement Day, Weak Topics, Bookmarks, Progress, Interview, Profile. Desktop uses a persistent sidebar.
+Primary revision actions should always be reachable within two taps from Dashboard.
+20. PWA Requirements
+Provide manifest.webmanifest with app name, short name, icons, theme color and display standalone.
+Add service worker for caching static assets and the application shell where safe.
+Do not claim full offline database functionality unless implemented.
+If offline, show a clear offline message and preserve any safely cached static pages.
+Installable from a mobile browser via Add to Home Screen.
+For the 5-day MVP, prioritize installability and static asset caching over complex offline data synchronization.
+21. Error & Validation Handling
+Use Jakarta Validation on request DTOs.
+Show field-level messages.
+Handle invalid/expired sessions gracefully.
+Return consistent JSON errors from API endpoints.
+Do not expose stack traces.
+Log server-side exceptions.
+Use transactions for multi-record writes.
+Prevent double quiz/session submission.
+Handle empty content pools gracefully with a useful message.
+22. Seed Data
+10 content areas.
+5+ topics for major Core CS subjects.
+10+ flashcards each for Java, DBMS, OS and CN.
+30+ MCQs across Java, DBMS, OS, CN and Aptitude.
+20+ aptitude formulas.
+15+ technical interview questions.
+10+ HR questions.
+Mixed difficulties/priorities.
+Demo student/admin accounts with BCrypt hashes.
+Use data.sql or a DatabaseSeeder service. Keep content separate from controllers. For production, avoid destructive seed behavior on every restart.
+23. Testing
+Area
+Minimum tests
+Auth
+Register, duplicate email, valid/invalid login, role restriction
+Quiz
+Correct/incorrect, skipped, 100%, 0%, persistence, duplicate submit
+Flashcards
+Ratings, box changes, bookmark
+Progress
+Thresholds, subject/topic accuracy, no-attempt behavior, streak
+Recommendation
+Weak/bookmark/unattempted boosts, duplicate exclusion
+Revision
+15/30/60 generation, session persistence, completion
+Admin
+Role protection, CRUD, validation, deactivation
+Database
+Relationships, transactions, restart persistence
+Web
+Protected routes, invalid payloads, API error responses
+24. Five-Day Development Plan
+Day
+Work
+Definition of done
+Day 1
+Spring Boot/Maven; MySQL schema/entities/repositories; security/auth; seed data; base layout
+Application runs, DB connects, seed loads, register/login works.
+Day 2
+Dashboard; subjects/topics; flashcards; formulas; bookmarks; responsive CSS foundation
+Core browsing/revision works on phone and desktop.
+Day 3
+MCQ engine; quiz modes; scoring; results; progress; global search
+Quiz is fully persistent and statistics update.
+Day 4
+Weak topics; recommendation; Sprint; Placement Day; streak; technical/HR; admin CRUD; PWA
+All major flows work end-to-end.
+Day 5
+Responsive polish; validation; tests; security review; deployment; README; demo rehearsal
+Clean build/deployment and complete mobile/desktop demo.
+25. Implementation Order
+Create Maven Spring Boot project and dependencies.
+Configure MySQL and environment properties.
+Create entities/enums and database schema.
+Create repositories.
+Create seed data.
+Implement Spring Security/auth.
+Create base Thymeleaf layout and responsive CSS.
+Implement subjects/topics.
+Implement flashcards/formulas/bookmarks.
+Implement quiz engine and results.
+Implement progress and weak topics.
+Implement recommendation/session engine.
+Implement Sprint and Placement Day.
+Implement interview modules.
+Implement admin CRUD.
+Add API interactions with vanilla JS.
+Add PWA manifest/service worker.
+Run tests and security checks.
+Deploy and test on phone.
+Finalize README/demo.
+26. Performance
+Use pagination for large admin/content lists.
+Use DTO projections or targeted queries for dashboard statistics where needed.
+Avoid eager-loading large collections.
+Use database indexes.
+Cache only static resources in MVP.
+Keep API payloads small.
+Do not perform long DB work synchronously in the browser request if it can be avoided.
+27. Acceptance Criteria
+Website is accessible from phone and desktop after deployment.
+Responsive layout works without horizontal scrolling.
+Student can register/login/logout.
+All ten content areas are represented.
+Flashcard reviews persist.
+Formula/MCQ/interview bookmarks persist.
+MCQ scoring is correct.
+Quiz history persists.
+Weak topics require minimum attempts.
+15/30/60 Sprint sessions generate relevant non-duplicate content.
+Placement Day provides cross-subject high-priority revision.
+Progress and streak update from real activity.
+Global search works.
+Technical and HR interview modules work.
+Admin CRUD works and is protected.
+PWA can be added to a compatible phone home screen.
+No normal flow exposes stack traces or secrets.
+28. Demo Flow
+Open deployed PrepSprint on a phone.
+Login as demo student.
+Show responsive dashboard.
+Use Recommend My Next Revision.
+Open Java flashcard and rate it.
+Open Formula Vault and bookmark a formula.
+Take a short MCQ quiz.
+Show result and weak topic.
+Start a 15-minute Sprint.
+Open Placement Day Mode.
+Show Progress and streak.
+Open Technical/HR interview preparation.
+Switch to desktop and show responsive layout.
+Login as Admin and create/edit/deactivate sample content.
+Explain Java, Spring Boot, OOP, JPA, MySQL, REST, responsive UI and security architecture.
+29. Deployment
+Use a Java-compatible cloud host for Spring Boot.
+Use managed MySQL or a hosted MySQL instance.
+Set DB URL, username, password and secret through environment variables.
+Use HTTPS.
+Configure CORS only if a separate frontend is introduced later; same-origin Thymeleaf MVP should not need broad CORS.
+Verify production database migrations/schema strategy.
+Test deployed URL from both Android/iOS browser where available.
+For the 5-day MVP, deployment simplicity is more important than sophisticated infrastructure. Do not add Docker/Kubernetes unless the deployment provider requires it.
+30. README / Deliverables
+Complete Maven source.
+Spring Boot configuration.
+MySQL schema/seed strategy.
+Thymeleaf templates.
+CSS/JS.
+PWA manifest/service worker.
+JUnit tests.
+README with prerequisites, local DB setup, environment variables, run commands and deployment notes.
+Demo credentials.
+Architecture diagram.
+Known limitations/future scope.
+31. Future Scope
+AI explanations/question generation.
+Native Android/iOS app.
+Advanced offline sync.
+DSA coding compiler.
+Company-specific preparation packs.
+Resume analyzer.
+Cloud user synchronization improvements.
+Advanced spaced repetition.
+Placement application tracker.
+Mock interview recording/evaluation.
+Notifications.
+32. Final Antigravity Quality Gate
+Clean Maven build passes.
+Tests pass.
+Fresh MySQL schema initializes correctly.
+Registration/login/logout verified.
+Role protection verified.
+All P0/P1 flows tested.
+Quiz score manually verified.
+Sprint 15/30/60 generation verified.
+No duplicate session items.
+Weak-topic minimum-attempt behavior verified.
+Bookmarks/search/filters verified.
+Phone widths 360/390/414 tested.
+Desktop tested.
+PWA manifest/installability verified.
+Deployment works over HTTPS.
+No secrets committed to source control.
+README and demo credentials verified.
+Final demo rehearsed.
+33. Final Product Definition
+PrepSprint is a mobile-first, full-stack Java web application for rapid placement revision. Its defining experience is not merely storing questions: it measures what the student knows, identifies weak areas, and immediately creates a focused revision path. A student should be able to open the site on a phone, choose 15/30/60 minutes, revise the highest-value material, and leave with a clear understanding of what to practice next.
