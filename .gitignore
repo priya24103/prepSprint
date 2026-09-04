@@ -6,3 +6,5 @@ target/
 application-local.properties
 .env
 *.log
+*.docx
+*prd*
